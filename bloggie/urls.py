@@ -19,7 +19,8 @@ from bloggie import views
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^blog/', include('bloggie.urls',
-                           namespace='bloggie',
-                           app_name='bloggie')),
+    url(r'^(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/'
+        r'(?P<post>[-\w]+)/$',
+        views.post_detail,
+        name='post_detail'),
 ]
