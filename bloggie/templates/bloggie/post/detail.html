@@ -6,7 +6,7 @@
 </head>
 <body>
 {% extends "bloggie/base.html" %}
-
+{% load bloggie_tags %}
 {% block title %} {{ post.title }} {% endblock %}
 
 {% block content %}
@@ -14,7 +14,7 @@
     <p class="date">
         Opublikowany {{ post.publish }} przez {{ post.author }}
     </p>
-{{ post.body|linebreaks }}
+{{ post.body|markdown }}
 <p>
     <a href="{% url 'bloggie:post_share' post.id %}">
     Udostępnij post</a>
