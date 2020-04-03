@@ -24,11 +24,9 @@ def post_detail(request, year, month, day, post):
                              publish__year=year,
                              publish__month=month,
                              publish__day=day)
-    return render(request,
-                  'bloggie/post/detail.html',
-                  {'post': post})
+
     #lista aktywnych komentarzy dla danego posta.
-    comments = post.commentrs.filter(active=True)
+    comments = post.comments.filter(active=True)
 
     if request.method == 'POST':
         #komentarz został opublikowany.
@@ -46,6 +44,7 @@ def post_detail(request, year, month, day, post):
                   {'post': post,
                    'comments': comments,
                    'comment_form': comment_form})
+
 
 
 # def post_list(request):
