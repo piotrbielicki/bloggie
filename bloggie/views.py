@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import ListView
-from .forms import EmailPostForm
-from .models import Post
+from .forms import EmailPostForm, CommentForm
+from .models import Post, Comment
 from django.core.mail import send_mail
 
 class PostListView(ListView):
@@ -27,6 +27,25 @@ def post_detail(request, year, month, day, post):
     return render(request,
                   'bloggie/post/detail.html',
                   {'post': post})
+    #lista aktywnych komentarzy dla danego posta.
+    comments = post.commentrs.filter(active=True)
+
+    if request.method == 'POST':
+        #komentarz został opublikowany.
+        comment_form = CommentForm(data=request.POST)
+        if comment_form.is_valid():
+            #Utworzenie obiektu Comment, ale jeszcze nie zapisujemy go w bazie danych
+            new_comment = comment_form.save(commit=False)
+            #Przypisanie komentarza do bieżącego posta.
+            new_comment.post = post
+            #Zapisanie komentarza w bazie danych
+            new_comment.save()
+    else:
+        comment_form = CommentForm()
+    return render(request, 'bloggie/post/detail.html',
+                  {'post': post,
+                   'comments': comments,
+                   'comment_form': comment_form})
 
 
 # def post_list(request):
