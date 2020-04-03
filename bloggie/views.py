@@ -4,6 +4,7 @@ from django.views.generic import ListView
 from .forms import EmailPostForm, CommentForm
 from .models import Post, Comment
 from django.core.mail import send_mail
+from taggit.models import Tag
 
 class PostListView(ListView):
     queryset = Post.published.all()
@@ -12,11 +13,30 @@ class PostListView(ListView):
     template_name = 'bloggie/post/list.html'
 
 
-# def post_list(request):
-#     posts = Post.published.all()
-#     return render(request,
-#                   'bloggie/post/list.html',
-#                   {'posts': posts})
+def post_list(request, tag_slug=None):
+    object_list = Post.published.all()
+    tag = None
+
+    if tag_slug:
+        tag = get_object_or_404(Tag, slug=tag_slug)
+        object_list = object_list.filter(tags__in=[tag])
+
+    paginator = Paginator(object_list, 3) # 3 posty na każdej stronie
+    page = request.GET.get('page')
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        #jeśli zmienna page nie jest liczbą całkowitą,
+        #pobierana jest pierwsza strona wyników.
+        posts = paginator.page(1)
+    except EmptyPage:
+        # jeśli zmienna ma wartość większą niż numer ostatniej
+        # strony, pobierana jest ostatnia strona wyników.
+        posts = paginator.page(paginator.num_pages)
+
+    return render(request, 'bloggie/post/list.html', {'page': page,
+                                               'posts': posts,
+                                                      'tag': tag})
 
 def post_detail(request, year, month, day, post):
     post = get_object_or_404(Post, slug=post,
@@ -52,26 +72,6 @@ def post_detail(request, year, month, day, post):
 #     return render(request,
 #                   'bloggie/post/list.html',
 #                   {'posts': posts})
-
-
-# def post_list(request):
-#     object_list = Post.published.all()
-#     paginator = Paginator(object_list, 3) # 3 posty na każdej stronie
-#     page = request.GET.get('page')
-#     try:
-#         posts = paginator.page(page)
-#     except PageNotAnInteger:
-#         #jeśli zmienna page nie jest liczbą całkowitą,
-#         #pobierana jest pierwsza strona wyników.
-#         posts = paginator.page(1)
-#     except EmptyPage:
-#         # jeśli zmienna ma wartość większą niż numer ostatniej
-#         # strony, pobierana jest ostatnia strona wyników.
-#         posts = paginator.page(paginator.num_pages)
-#
-#
-#     return render(request, 'bloggie/post/list.html', {'page': page,
-#                                                'posts': posts})
 
 def post_share(request, post_id):
     #Pobranie posta na podstawie jego identyfikatora.
