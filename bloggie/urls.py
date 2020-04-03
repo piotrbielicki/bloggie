@@ -23,4 +23,7 @@ urlpatterns = [
         r'(?P<post>[-\w]+)/$',
         views.post_detail,
         name='post_detail'),
+    url(r'^blog/', include('bloggie.urls',
+                           namespace='bloggie',
+                           app_name='bloggie')),
 ]
