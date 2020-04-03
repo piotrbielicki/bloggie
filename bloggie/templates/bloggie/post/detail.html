@@ -5,9 +5,9 @@
     <title>Title</title>
 </head>
 <body>
-{% extands "bloggie/base.html" %}
+{% extends "bloggie/base.html" %}
 
-{% block title %} {{ post.title }} { endblock %}
+{% block title %} {{ post.title }} {% endblock %}
 
 {% block content %}
     <h1>{{ post.title }}</h1>
@@ -15,6 +15,10 @@
         Opublikowany {{ post.publish }} przez {{ post.author }}
     </p>
 {{ post.body|linebreaks }}
+<p>
+    <a href="{% url 'bloggie:post_share' post.id %}">
+    Udostępnij post</a>
+</p>
 {% endblock %}
 </body>
 </html>
