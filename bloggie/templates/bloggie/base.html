@@ -1,3 +1,4 @@
+{% load bloggie_tags %}
 {% load staticfiles %}
 <! DOCTYPE html>
 <html>
@@ -11,7 +12,9 @@
     </div>
     <div id="sidebar">
         <h2>Mój bloggie</h2>
-        <p> To jest mój bloggie</p>
+        <p> To jest mój bloggie. Dotychczas opublikowano tu {% total_posts %} postów.</p>
+        <h3>Najnowsze posty</h3>
+        {% show_latest_posts 3 %}
     </div>
 <body>
 </body>
