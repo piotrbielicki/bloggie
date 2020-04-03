@@ -19,7 +19,7 @@ from bloggie import views
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^blog/', include('bloggie.urls',
+    url(r'^bloggie/', include('bloggie.urls',
                            namespace='bloggie',
                            app_name='bloggie')),
 ]
